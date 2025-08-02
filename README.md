@@ -1,170 +1,211 @@
-# 英语单词量测试小程序
+# 英语单词量测试API
 
 ## 项目简介
 
-英语单词量测试小程序是一个基于微信小程序和Django后端的英语词汇量测试应用。该项目旨在为用户提供便捷的英语词汇量评估服务，帮助用户了解自己的词汇水平并提供个性化的学习建议。
+英语单词量测试API是为微信小程序提供后端服务的Django项目，实现了用户管理、测试功能、数据统计等核心功能。
 
-## 项目架构
+## 技术栈
 
-### 前端 (微信小程序)
-- **技术栈**: 微信小程序原生框架
-- **主要功能**: 用户测试、结果展示、历史记录、排行榜等
-- **目录结构**: 位于 `miniprogram/` 目录
-
-### 后端 (Django API)
-- **技术栈**: Python + Django 4 + MySQL 8 + Django REST Framework
-- **主要功能**: 用户管理、测试逻辑、数据统计、API接口
-- **目录结构**: 位于 `backend/` 目录
+- **Python**: 3.9+
+- **Django**: 4.2.7
+- **Django REST Framework**: 3.14.0
+- **MySQL**: 8.0
+- **Redis**: 6.0
+- **SimpleUI**: 后台管理美化
 
 ## 项目结构
 
 ```
-english-vocabulary-miniprogram/
-├── 1-需求分析/                    # 项目需求文档
-│   └── 项目需求.md
-├── 2-UI设计图/                    # UI设计文件
-│   ├── index.html                 # 设计图展示页面
-│   ├── home.html                  # 首页设计
-│   ├── test.html                  # 测试页面设计
-│   ├── result.html                # 结果页面设计
-│   ├── history.html               # 历史记录设计
-│   ├── profile.html               # 个人中心设计
-│   ├── ranking.html               # 排行榜设计
-│   ├── vocabulary.html            # 词汇库设计
-│   └── settings.html              # 设置页面设计
-├── 3-架构设计/                    # 架构设计文档
-│   ├── 1-项目后端架构文档.md      # 后端架构设计
-│   └── 2-项目小程序架构文档.md    # 小程序架构设计
-├── backend/                       # 后端项目 (待开发)
-├── miniprogram/                   # 小程序项目 (待开发)
-├── docs/                          # 项目文档
-└── README.md                      # 项目说明
+test_words_api/
+├── english_vocabulary/          # Django项目配置
+│   ├── settings.py             # 项目设置
+│   ├── urls.py                 # 主URL配置
+│   ├── wsgi.py                 # WSGI配置
+│   └── asgi.py                 # ASGI配置
+├── apps/                       # 应用目录
+│   ├── users/                  # 用户管理
+│   ├── tests/                  # 测试管理
+│   ├── vocabulary/             # 词汇管理
+│   ├── ranking/                # 排行榜
+│   └── statistics/             # 统计分析
+├── manage.py                   # Django管理脚本
+├── requirements.txt            # 项目依赖
+├── init_data.py               # 初始化数据脚本
+└── README.md                  # 项目说明
 ```
-
-## 核心功能
-
-### 用户功能
-- ✅ 微信授权登录
-- ✅ 个人信息管理
-- ✅ 学习统计展示
-
-### 测试功能
-- ✅ 多种难度级别测试
-- ✅ 实时答题进度
-- ✅ 详细结果分析
-- ✅ 学习建议推荐
-
-### 学习功能
-- ✅ 测试历史记录
-- ✅ 成绩趋势分析
-- ✅ 词汇库学习
-- ✅ 个性化推荐
-
-### 社交功能
-- ✅ 好友排行榜
-- ✅ 全球排行榜
-- ✅ 成绩分享
-
-## 技术特点
-
-### 前端特点
-- 🎨 现代化UI设计，符合微信小程序设计规范
-- ⚡ 流畅的用户体验，响应式设计
-- 🔧 组件化开发，代码复用性高
-- 📱 适配不同尺寸的手机屏幕
-
-### 后端特点
-- 🛡️ 安全性高，JWT认证，权限控制
-- 🚀 性能优秀，Redis缓存，数据库优化
-- 📊 数据统计完善，支持多维度分析
-- 🔌 API设计规范，支持版本管理
-
-## 开发环境
-
-### 前端环境
-- 微信开发者工具
-- Node.js 14+
-- 微信小程序基础库 2.19.4+
-
-### 后端环境
-- Python 3.9+
-- Django 4.2
-- MySQL 8.0
-- Redis 6.0
 
 ## 快速开始
 
-### 1. 克隆项目
-```bash
-git clone https://github.com/keiyoui/english-vocabulary-miniprogram.git
-cd english-vocabulary-miniprogram
-```
+### 1. 环境准备
 
-### 2. 后端开发
 ```bash
-# 进入后端目录
-cd backend
-
 # 创建虚拟环境
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# 激活虚拟环境
+# Windows
+venv\Scripts\activate
+# Linux/Mac
+source venv/bin/activate
 
 # 安装依赖
 pip install -r requirements.txt
+```
 
-# 数据库迁移
+### 2. 数据库配置
+
+确保MySQL服务已启动，并创建数据库：
+
+```sql
+CREATE DATABASE fast_words CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+### 3. 数据库迁移
+
+```bash
+# 创建数据库表
+python manage.py makemigrations
 python manage.py migrate
 
+# 创建超级用户
+python manage.py createsuperuser
+
+# 初始化示例数据
+python init_data.py
+```
+
+### 4. 启动服务
+
+```bash
 # 启动开发服务器
 python manage.py runserver
 ```
 
-### 3. 小程序开发
-```bash
-# 使用微信开发者工具打开 miniprogram 目录
-# 配置AppID和服务器域名
+## API接口文档
+
+启动服务后，访问以下地址查看API文档：
+
+- **Swagger UI**: http://localhost:8000/swagger/
+- **ReDoc**: http://localhost:8000/redoc/
+
+## 主要功能
+
+### 1. 用户管理
+- 微信授权登录
+- 用户信息管理
+- JWT认证
+
+### 2. 测试功能
+- 获取测试题目
+- 提交测试答案
+- 获取测试结果
+- 测试历史记录
+
+### 3. 词汇管理
+- 词汇列表查询
+- 词汇详情查看
+- 按难度分类
+
+### 4. 排行榜
+- 好友排行榜
+- 全球排行榜
+- 用户排名查询
+
+### 5. 数据统计
+- 学习统计
+- 历史记录统计
+- 进度分析
+
+## API接口列表
+
+### 认证相关
+- `POST /api/v1/auth/login/` - 用户登录
+- `GET /api/v1/auth/profile/` - 获取用户信息
+- `PUT /api/v1/auth/profile/` - 更新用户信息
+
+### 测试相关
+- `GET /api/v1/tests/questions/` - 获取测试题目
+- `POST /api/v1/tests/submit/` - 提交测试答案
+- `GET /api/v1/tests/result/{test_id}/` - 获取测试结果
+- `GET /api/v1/tests/history/` - 获取测试历史
+
+### 词汇相关
+- `GET /api/v1/vocabulary/` - 获取词汇列表
+- `GET /api/v1/vocabulary/{word}/` - 获取词汇详情
+
+### 排行榜相关
+- `GET /api/v1/ranking/` - 获取排行榜
+- `GET /api/v1/ranking/user-rank/` - 获取用户排名
+
+### 统计相关
+- `GET /api/v1/history/statistics/` - 获取学习统计
+- `GET /api/v1/history/statistics/detail/` - 获取历史统计详情
+
+## 数据库配置
+
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'fast_words',
+        'USER': 'root',
+        'PASSWORD': 'asdasd',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+    }
+}
 ```
 
-## 部署说明
+## 后台管理
 
-### 后端部署
-- 使用Docker容器化部署
-- 支持Nginx反向代理
-- 配置SSL证书
-- 数据库主从分离
+访问 http://localhost:8000/admin/ 进入后台管理界面，使用创建的超级用户账号登录。
 
-### 小程序部署
-- 提交微信小程序审核
-- 配置生产环境API地址
-- 发布正式版本
+## 开发说明
 
-## 贡献指南
+### 添加新的API接口
+
+1. 在对应的app中创建视图函数
+2. 在urls.py中添加URL配置
+3. 在serializers.py中定义序列化器
+4. 在models.py中定义数据模型（如需要）
+
+### 测试
+
+```bash
+# 运行测试
+python manage.py test
+
+# 运行特定应用的测试
+python manage.py test apps.users
+```
+
+## 部署
+
+### 生产环境配置
+
+1. 修改 `settings.py` 中的 `DEBUG = False`
+2. 配置生产环境的数据库连接
+3. 配置静态文件收集
+4. 使用 Gunicorn 或 uWSGI 部署
+
+### Docker部署
+
+```bash
+# 构建镜像
+docker build -t english-vocabulary-api .
+
+# 运行容器
+docker run -p 8000:8000 english-vocabulary-api
+```
+
+## 贡献
 
 1. Fork 本仓库
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 打开 Pull Request
+2. 创建特性分支
+3. 提交更改
+4. 推送到分支
+5. 创建 Pull Request
 
 ## 许可证
 
-本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情
-
-## 联系方式
-
-- 项目维护者: keiyoui
-- 邮箱: 308864210@qq.com
-- 项目地址: [https://github.com/keiyoui/english-vocabulary-miniprogram](https://github.com/keiyoui/english-vocabulary-miniprogram)
-
-## 更新日志
-
-### v1.0.0 (计划中)
-- ✅ 项目架构设计完成
-- ✅ UI设计图完成
-- ✅ 需求分析文档完成
-- 🔄 后端开发进行中
-- 🔄 小程序开发进行中
-
----
-
-⭐ 如果这个项目对您有帮助，请给我们一个星标！ 
+本项目采用 MIT 许可证。 
