@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心 - 英语单词量测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            margin: 20px auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .app-content {
+            height: calc(100% - 44px);
+            background: #f8f9fa;
+            overflow-y: auto;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            font-weight: 600;
+            margin: 0 auto 15px;
+        }
+
+        .user-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .user-level {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .achievement-badge {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 10px 20px;
+            margin-top: 15px;
+            display: inline-block;
+        }
+
+        .stats-section {
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .menu-section {
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item:hover {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 0 -15px;
+        }
+
+        .menu-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .menu-text {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .menu-right {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .achievement-section {
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .achievement-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .achievement-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .achievement-name {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .achievement-desc {
+            font-size: 10px;
+            color: #999;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 335px;
+            background: white;
+            border-radius: 25px 25px 0 0;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .nav-item.active {
+            color: #667eea;
+        }
+
+        .nav-item:not(.active) {
+            color: #999;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #dc3545, #e74c3c);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 15px;
+            width: calc(100% - 40px);
+            margin: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="phone-screen">
+            <div class="status-bar">
+                <div class="status-left">
+                    <span>9:41</span>
+                </div>
+                <div class="status-right">
+                    <span>📶</span>
+                    <span>📶</span>
+                    <div class="battery">
+                        <div class="battery-level"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="app-content">
+                <div class="profile-header">
+                    <div class="avatar">小</div>
+                    <div class="user-name">小明</div>
+                    <div class="user-level">中级学习者</div>
+                    <div class="achievement-badge">
+                        🏆 连续学习 7 天
+                    </div>
+                </div>
+
+                <div class="stats-section">
+                    <div class="section-title">
+                        📊 学习统计
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">15</div>
+                            <div class="stat-label">总测试次数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">85%</div>
+                            <div class="stat-label">平均正确率</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">8,500</div>
+                            <div class="stat-label">当前词汇量</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">7</div>
+                            <div class="stat-label">连续学习天数</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-section">
+                    <div class="section-title">
+                        ⚙️ 设置与功能
+                    </div>
+                    <div class="menu-item" onclick="alert('编辑个人信息')">
+                        <div class="menu-left">
+                            <div class="menu-icon" style="background: #e3f2fd; color: #2196f3;">👤</div>
+                            <div class="menu-text">编辑个人信息</div>
+                        </div>
+                        <div class="menu-right">></div>
+                    </div>
+                    <div class="menu-item" onclick="alert('学习目标设置')">
+                        <div class="menu-left">
+                            <div class="menu-icon" style="background: #f3e5f5; color: #9c27b0;">🎯</div>
+                            <div class="menu-text">学习目标</div>
+                        </div>
+                        <div class="menu-right">每日20词</div>
+                    </div>
+                    <div class="menu-item" onclick="alert('通知设置')">
+                        <div class="menu-left">
+                            <div class="menu-icon" style="background: #fff3e0; color: #ff9800;">🔔</div>
+                            <div class="menu-text">通知设置</div>
+                        </div>
+                        <div class="menu-right">已开启</div>
+                    </div>
+                    <div class="menu-item" onclick="alert('隐私设置')">
+                        <div class="menu-left">
+                            <div class="menu-icon" style="background: #e8f5e8; color: #4caf50;">🔒</div>
+                            <div class="menu-text">隐私设置</div>
+                        </div>
+                        <div class="menu-right">></div>
+                    </div>
+                    <div class="menu-item" onclick="alert('帮助与反馈')">
+                        <div class="menu-left">
+                            <div class="menu-icon" style="background: #fff8e1; color: #ffc107;">❓</div>
+                            <div class="menu-text">帮助与反馈</div>
+                        </div>
+                        <div class="menu-right">></div>
+                    </div>
+                    <div class="menu-item" onclick="alert('关于我们')">
+                        <div class="menu-left">
+                            <div class="menu-icon" style="background: #fce4ec; color: #e91e63;">ℹ️</div>
+                            <div class="menu-text">关于我们</div>
+                        </div>
+                        <div class="menu-right">v1.0.0</div>
+                    </div>
+                </div>
+
+                <div class="achievement-section">
+                    <div class="section-title">
+                        🏆 成就徽章
+                    </div>
+                    <div class="achievement-grid">
+                        <div class="achievement-item">
+                            <div class="achievement-icon">🔥</div>
+                            <div class="achievement-name">连续学习</div>
+                            <div class="achievement-desc">7天</div>
+                        </div>
+                        <div class="achievement-item">
+                            <div class="achievement-icon">📚</div>
+                            <div class="achievement-name">词汇达人</div>
+                            <div class="achievement-desc">8000词</div>
+                        </div>
+                        <div class="achievement-item">
+                            <div class="achievement-icon">⚡</div>
+                            <div class="achievement-name">速度之王</div>
+                            <div class="achievement-desc">10分钟</div>
+                        </div>
+                        <div class="achievement-item">
+                            <div class="achievement-icon">🎯</div>
+                            <div class="achievement-name">精准射手</div>
+                            <div class="achievement-desc">95%</div>
+                        </div>
+                        <div class="achievement-item">
+                            <div class="achievement-icon">🌟</div>
+                            <div class="achievement-name">测试达人</div>
+                            <div class="achievement-desc">15次</div>
+                        </div>
+                        <div class="achievement-item">
+                            <div class="achievement-icon">💎</div>
+                            <div class="achievement-name">钻石用户</div>
+                            <div class="achievement-desc">30天</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="logout-btn" onclick="alert('退出登录')">
+                    退出登录
+                </button>
+
+                <div class="bottom-nav">
+                    <div class="nav-item">
+                        <div class="nav-icon">🏠</div>
+                        <div class="nav-label">首页</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon">📝</div>
+                        <div class="nav-label">测试</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon">📈</div>
+                        <div class="nav-label">历史</div>
+                    </div>
+                    <div class="nav-item active">
+                        <div class="nav-icon">👤</div>
+                        <div class="nav-label">我的</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

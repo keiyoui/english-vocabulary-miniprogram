@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试设置 - 英语单词量测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            margin: 20px auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .app-content {
+            height: calc(100% - 44px);
+            background: #f8f9fa;
+            overflow-y: auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .settings-section {
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-left {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .setting-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .setting-desc {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .setting-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .setting-value {
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .toggle-switch {
+            width: 50px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #667eea;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 26px;
+            height: 26px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(20px);
+        }
+
+        .difficulty-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .difficulty-option {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #e9ecef;
+        }
+
+        .difficulty-option.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .difficulty-option:not(.active) {
+            background: white;
+            color: #666;
+        }
+
+        .time-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .time-option {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #e9ecef;
+        }
+
+        .time-option.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .time-option:not(.active) {
+            background: white;
+            color: #666;
+        }
+
+        .question-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .question-option {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #e9ecef;
+        }
+
+        .question-option.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .question-option:not(.active) {
+            background: white;
+            color: #666;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider {
+            flex: 1;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .slider-thumb {
+            width: 20px;
+            height: 20px;
+            background: #667eea;
+            border-radius: 50%;
+            position: absolute;
+            top: -7px;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+        }
+
+        .slider-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 3px;
+            width: 60%;
+        }
+
+        .preview-section {
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .preview-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .preview-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .preview-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .preview-stat {
+            text-align: center;
+        }
+
+        .preview-number {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .preview-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .action-buttons {
+            padding: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="phone-screen">
+            <div class="status-bar">
+                <div class="status-left">
+                    <span>9:41</span>
+                </div>
+                <div class="status-right">
+                    <span>📶</span>
+                    <span>📶</span>
+                    <div class="battery">
+                        <div class="battery-level"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="app-content">
+                <button class="back-btn" onclick="alert('返回')">← 返回</button>
+
+                <div class="header">
+                    <h1>🎯 测试设置</h1>
+                    <p>自定义你的测试参数</p>
+                </div>
+
+                <div class="settings-section">
+                    <div class="section-title">
+                        📊 难度设置
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-left">
+                            <div class="setting-label">测试难度</div>
+                            <div class="setting-desc">选择适合你的难度级别</div>
+                        </div>
+                        <div class="setting-right">
+                            <div class="difficulty-options">
+                                <div class="difficulty-option" onclick="selectDifficulty(this)">初级</div>
+                                <div class="difficulty-option active" onclick="selectDifficulty(this)">中级</div>
+                                <div class="difficulty-option" onclick="selectDifficulty(this)">高级</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="section-title">
+                        ⏱️ 时间设置
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-left">
+                            <div class="setting-label">测试时长</div>
+                            <div class="setting-desc">设置单次测试的时间限制</div>
+                        </div>
+                        <div class="setting-right">
+                            <div class="time-options">
+                                <div class="time-option" onclick="selectTime(this)">5分钟</div>
+                                <div class="time-option active" onclick="selectTime(this)">10分钟</div>
+                                <div class="time-option" onclick="selectTime(this)">15分钟</div>
+                                <div class="time-option" onclick="selectTime(this)">无限制</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="section-title">
+                        📝 题目设置
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-left">
+                            <div class="setting-label">题目数量</div>
+                            <div class="setting-desc">设置每次测试的题目数量</div>
+                        </div>
+                        <div class="setting-right">
+                            <div class="question-options">
+                                <div class="question-option" onclick="selectQuestions(this)">10题</div>
+                                <div class="question-option active" onclick="selectQuestions(this)">20题</div>
+                                <div class="question-option" onclick="selectQuestions(this)">50题</div>
+                                <div class="question-option" onclick="selectQuestions(this)">100题</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="section-title">
+                        🎯 题型设置
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-left">
+                            <div class="setting-label">选择题</div>
+                            <div class="setting-desc">词义选择题目</div>
+                        </div>
+                        <div class="setting-right">
+                            <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-left">
+                            <div class="setting-label">填空题</div>
+                            <div class="setting-desc">单词填空题目</div>
+                        </div>
+                        <div class="setting-right">
+                            <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-left">
+                            <div class="setting-label">词义匹配</div>
+                            <div class="setting-desc">单词与释义匹配</div>
+                        </div>
+                        <div class="setting-right">
+                            <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="section-title">
+                        ⚙️ 其他设置
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-left">
+                            <div class="setting-label">显示答案</div>
+                            <div class="setting-desc">答题后显示正确答案</div>
+                        </div>
+                        <div class="setting-right">
+                            <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-left">
+                            <div class="setting-label">跳过题目</div>
+                            <div class="setting-desc">允许跳过不会的题目</div>
+                        </div>
+                        <div class="setting-right">
+                            <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-left">
+                            <div class="setting-label">返回修改</div>
+                            <div class="setting-desc">允许返回修改答案</div>
+                        </div>
+                        <div class="setting-right">
+                            <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-section">
+                    <div class="preview-title">📋 测试预览</div>
+                    <div class="preview-card">
+                        <div style="font-size: 16px; margin-bottom: 10px;">中级难度测试</div>
+                        <div class="preview-stats">
+                            <div class="preview-stat">
+                                <div class="preview-number">20</div>
+                                <div class="preview-label">题目数量</div>
+                            </div>
+                            <div class="preview-stat">
+                                <div class="preview-number">10</div>
+                                <div class="preview-label">分钟时长</div>
+                            </div>
+                            <div class="preview-stat">
+                                <div class="preview-number">3</div>
+                                <div class="preview-label">题型种类</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="alert('重置设置')">重置</button>
+                    <button class="btn btn-primary" onclick="alert('开始测试')">开始测试</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectDifficulty(element) {
+            document.querySelectorAll('.difficulty-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            element.classList.add('active');
+        }
+
+        function selectTime(element) {
+            document.querySelectorAll('.time-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            element.classList.add('active');
+        }
+
+        function selectQuestions(element) {
+            document.querySelectorAll('.question-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            element.classList.add('active');
+        }
+
+        function toggleSwitch(element) {
+            element.classList.toggle('active');
+        }
+    </script>
+</body>
+</html> 

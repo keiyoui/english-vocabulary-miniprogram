@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英语单词量测试小程序 - UI设计图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .pages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .page-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .page-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+
+        .page-card h3 {
+            color: #333;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .page-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .phone-frame {
+            width: 320px;
+            height: 650px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            margin: 0 auto 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .battery {
+            width: 25px;
+            height: 12px;
+            border: 1px solid white;
+            border-radius: 3px;
+            position: relative;
+        }
+
+        .battery::after {
+            content: '';
+            position: absolute;
+            right: -3px;
+            top: 3px;
+            width: 2px;
+            height: 6px;
+            background: white;
+            border-radius: 0 1px 1px 0;
+        }
+
+        .battery-level {
+            width: 80%;
+            height: 100%;
+            background: white;
+            border-radius: 1px;
+        }
+
+        /* 首页样式 */
+        .home-content {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: calc(100% - 44px);
+            color: white;
+        }
+
+        .home-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .home-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .user-info {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .start-test-btn {
+            background: white;
+            color: #667eea;
+            padding: 15px 30px;
+            border-radius: 25px;
+            text-align: center;
+            font-weight: 600;
+            margin: 10px 0;
+            display: block;
+            text-decoration: none;
+        }
+
+        /* 测试页面样式 */
+        .test-content {
+            padding: 20px;
+            background: white;
+            height: calc(100% - 44px);
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        /* 结果页面样式 */
+        .result-content {
+            padding: 20px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            height: calc(100% - 44px);
+            color: white;
+        }
+
+        .score-display {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        /* 历史记录样式 */
+        .history-content {
+            padding: 20px;
+            background: white;
+            height: calc(100% - 44px);
+        }
+
+        .history-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        /* 个人中心样式 */
+        .profile-content {
+            padding: 20px;
+            background: white;
+            height: calc(100% - 44px);
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #667eea;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+        }
+
+        /* 排行榜样式 */
+        .ranking-content {
+            padding: 20px;
+            background: white;
+            height: calc(100% - 44px);
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .ranking-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        /* 词汇库样式 */
+        .vocabulary-content {
+            padding: 20px;
+            background: white;
+            height: calc(100% - 44px);
+        }
+
+        .vocab-category {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        /* 设置页面样式 */
+        .settings-content {
+            padding: 20px;
+            background: white;
+            height: calc(100% - 44px);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>英语单词量测试小程序</h1>
+            <p>UI设计图展示 - 现代iOS风格</p>
+        </div>
+
+        <div class="pages-grid">
+            <div class="page-card">
+                <h3>🏠 首页</h3>
+                <p>小程序主页面，展示用户信息和快速开始测试的入口</p>
+                <div class="phone-frame">
+                    <div class="phone-screen">
+                        <div class="status-bar">
+                            <div class="status-left">9:41</div>
+                            <div class="status-right">
+                                <div class="battery">
+                                    <div class="battery-level"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="home-content">
+                            <div class="home-header">
+                                <h2>英语单词量测试</h2>
+                                <p>提升你的词汇量</p>
+                            </div>
+                            <div class="user-info">
+                                <h3>欢迎回来！</h3>
+                                <p>当前词汇量: 3,500</p>
+                            </div>
+                            <a href="#" class="start-test-btn">开始测试</a>
+                            <a href="#" class="start-test-btn">查看历史</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-card">
+                <h3>📝 测试页面</h3>
+                <p>单词量测试的核心页面，包含题目展示和答题功能</p>
+                <div class="phone-frame">
+                    <div class="phone-screen">
+                        <div class="status-bar">
+                            <div class="status-left">9:41</div>
+                            <div class="status-right">
+                                <div class="battery">
+                                    <div class="battery-level"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="test-content">
+                            <div class="question-card">
+                                <h3>第 5 题 / 共 20 题</h3>
+                                <p>选择与 "ubiquitous" 意思最相近的单词：</p>
+                            </div>
+                            <button class="option-btn">A. common</button>
+                            <button class="option-btn">B. rare</button>
+                            <button class="option-btn">C. unique</button>
+                            <button class="option-btn">D. special</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-card">
+                <h3>📊 结果页面</h3>
+                <p>测试完成后的结果展示，包含详细分析和学习建议</p>
+                <div class="phone-frame">
+                    <div class="phone-screen">
+                        <div class="status-bar">
+                            <div class="status-left">9:41</div>
+                            <div class="status-right">
+                                <div class="battery">
+                                    <div class="battery-level"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-content">
+                            <div class="score-display">
+                                <div class="score-circle">85</div>
+                                <h3>测试完成！</h3>
+                                <p>你的词汇量约为 4,200 个单词</p>
+                            </div>
+                            <div class="user-info">
+                                <h4>详细分析</h4>
+                                <p>• 基础词汇: 优秀</p>
+                                <p>• 中级词汇: 良好</p>
+                                <p>• 高级词汇: 需加强</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-card">
+                <h3>📈 历史记录</h3>
+                <p>用户测试历史记录，包含成绩趋势和详细统计</p>
+                <div class="phone-frame">
+                    <div class="phone-screen">
+                        <div class="status-bar">
+                            <div class="status-left">9:41</div>
+                            <div class="status-right">
+                                <div class="battery">
+                                    <div class="battery-level"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="history-content">
+                            <h3>测试历史</h3>
+                            <div class="history-item">
+                                <h4>2024-01-15</h4>
+                                <p>得分: 85分 | 词汇量: 4,200</p>
+                            </div>
+                            <div class="history-item">
+                                <h4>2024-01-10</h4>
+                                <p>得分: 78分 | 词汇量: 3,800</p>
+                            </div>
+                            <div class="history-item">
+                                <h4>2024-01-05</h4>
+                                <p>得分: 82分 | 词汇量: 4,000</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-card">
+                <h3>👤 个人中心</h3>
+                <p>用户个人信息管理，包含设置和统计信息</p>
+                <div class="phone-frame">
+                    <div class="phone-screen">
+                        <div class="status-bar">
+                            <div class="status-left">9:41</div>
+                            <div class="status-right">
+                                <div class="battery">
+                                    <div class="battery-level"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="profile-content">
+                            <div class="profile-header">
+                                <div class="profile-avatar">👤</div>
+                                <h3>用户名</h3>
+                                <p>学习天数: 30天</p>
+                            </div>
+                            <div class="setting-item">
+                                <span>个人资料</span>
+                                <span>></span>
+                            </div>
+                            <div class="setting-item">
+                                <span>学习统计</span>
+                                <span>></span>
+                            </div>
+                            <div class="setting-item">
+                                <span>设置</span>
+                                <span>></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-card">
+                <h3>🏆 排行榜</h3>
+                <p>用户成绩排行榜，包含好友排名和全球排名</p>
+                <div class="phone-frame">
+                    <div class="phone-screen">
+                        <div class="status-bar">
+                            <div class="status-left">9:41</div>
+                            <div class="status-right">
+                                <div class="battery">
+                                    <div class="battery-level"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ranking-content">
+                            <h3>好友排行榜</h3>
+                            <div class="ranking-item">
+                                <div class="ranking-number">1</div>
+                                <div>
+                                    <h4>张三</h4>
+                                    <p>词汇量: 5,200</p>
+                                </div>
+                            </div>
+                            <div class="ranking-item">
+                                <div class="ranking-number">2</div>
+                                <div>
+                                    <h4>李四</h4>
+                                    <p>词汇量: 4,800</p>
+                                </div>
+                            </div>
+                            <div class="ranking-item">
+                                <div class="ranking-number">3</div>
+                                <div>
+                                    <h4>王五</h4>
+                                    <p>词汇量: 4,500</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-card">
+                <h3>📚 词汇库</h3>
+                <p>词汇学习资源库，包含分类词汇和搜索功能</p>
+                <div class="phone-frame">
+                    <div class="phone-screen">
+                        <div class="status-bar">
+                            <div class="status-left">9:41</div>
+                            <div class="status-right">
+                                <div class="battery">
+                                    <div class="battery-level"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vocabulary-content">
+                            <h3>词汇分类</h3>
+                            <div class="vocab-category">
+                                <h4>基础词汇 (1,000词)</h4>
+                                <p>日常生活常用词汇</p>
+                            </div>
+                            <div class="vocab-category">
+                                <h4>中级词汇 (2,000词)</h4>
+                                <p>工作学习相关词汇</p>
+                            </div>
+                            <div class="vocab-category">
+                                <h4>高级词汇 (3,000词)</h4>
+                                <p>专业学术词汇</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-card">
+                <h3>🎯 测试设置</h3>
+                <p>测试参数设置页面，包含难度、时长等选项</p>
+                <div class="phone-frame">
+                    <div class="phone-screen">
+                        <div class="status-bar">
+                            <div class="status-left">9:41</div>
+                            <div class="status-right">
+                                <div class="battery">
+                                    <div class="battery-level"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="settings-content">
+                            <h3>测试设置</h3>
+                            <div class="setting-item">
+                                <span>测试难度</span>
+                                <span>中等</span>
+                            </div>
+                            <div class="setting-item">
+                                <span>题目数量</span>
+                                <span>20题</span>
+                            </div>
+                            <div class="setting-item">
+                                <span>时间限制</span>
+                                <span>15分钟</span>
+                            </div>
+                            <div class="setting-item">
+                                <span>词汇范围</span>
+                                <span>全部</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

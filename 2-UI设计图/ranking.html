@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>排行榜 - 英语单词量测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            margin: 20px auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .app-content {
+            height: calc(100% - 44px);
+            background: #f8f9fa;
+            overflow-y: auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .tab-navigation {
+            display: flex;
+            background: white;
+            margin: 20px;
+            border-radius: 15px;
+            padding: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .tab:not(.active) {
+            color: #666;
+        }
+
+        .my-rank {
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .my-rank-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .my-rank-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .my-rank-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .my-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .my-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .my-info p {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .my-rank-right {
+            text-align: right;
+        }
+
+        .my-rank-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .my-rank-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .ranking-list {
+            margin: 20px;
+        }
+
+        .ranking-item {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ranking-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .rank-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .rank-number.gold {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+        }
+
+        .rank-number.silver {
+            background: linear-gradient(135deg, #c0c0c0, #e5e5e5);
+            color: #333;
+        }
+
+        .rank-number.bronze {
+            background: linear-gradient(135deg, #cd7f32, #daa520);
+        }
+
+        .rank-number.other {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .user-info p {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .ranking-right {
+            text-align: right;
+        }
+
+        .score {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .score-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .stats-overview {
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stats-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .stat-number {
+            font-size: 20px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 335px;
+            background: white;
+            border-radius: 25px 25px 0 0;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .nav-item.active {
+            color: #667eea;
+        }
+
+        .nav-item:not(.active) {
+            color: #999;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="phone-screen">
+            <div class="status-bar">
+                <div class="status-left">
+                    <span>9:41</span>
+                </div>
+                <div class="status-right">
+                    <span>📶</span>
+                    <span>📶</span>
+                    <div class="battery">
+                        <div class="battery-level"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="app-content">
+                <div class="header">
+                    <h1>🏆 排行榜</h1>
+                    <p>看看你的排名如何</p>
+                </div>
+
+                <div class="tab-navigation">
+                    <div class="tab active" onclick="switchTab('friends')">好友榜</div>
+                    <div class="tab" onclick="switchTab('global')">全球榜</div>
+                    <div class="tab" onclick="switchTab('weekly')">周榜</div>
+                </div>
+
+                <div class="my-rank">
+                    <div class="my-rank-title">我的排名</div>
+                    <div class="my-rank-info">
+                        <div class="my-rank-left">
+                            <div class="my-avatar">小</div>
+                            <div class="my-info">
+                                <h3>小明</h3>
+                                <p>中级学习者</p>
+                            </div>
+                        </div>
+                        <div class="my-rank-right">
+                            <div class="my-rank-number">#8</div>
+                            <div class="my-rank-label">好友排名</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ranking-list">
+                    <div class="ranking-item">
+                        <div class="ranking-left">
+                            <div class="rank-number gold">1</div>
+                            <div class="user-avatar">李</div>
+                            <div class="user-info">
+                                <h3>李华</h3>
+                                <p>高级学习者</p>
+                            </div>
+                        </div>
+                        <div class="ranking-right">
+                            <div class="score">12,500</div>
+                            <div class="score-label">词汇量</div>
+                        </div>
+                    </div>
+
+                    <div class="ranking-item">
+                        <div class="ranking-left">
+                            <div class="rank-number silver">2</div>
+                            <div class="user-avatar">王</div>
+                            <div class="user-info">
+                                <h3>王芳</h3>
+                                <p>高级学习者</p>
+                            </div>
+                        </div>
+                        <div class="ranking-right">
+                            <div class="score">11,800</div>
+                            <div class="score-label">词汇量</div>
+                        </div>
+                    </div>
+
+                    <div class="ranking-item">
+                        <div class="ranking-left">
+                            <div class="rank-number bronze">3</div>
+                            <div class="user-avatar">张</div>
+                            <div class="user-info">
+                                <h3>张伟</h3>
+                                <p>中级学习者</p>
+                            </div>
+                        </div>
+                        <div class="ranking-right">
+                            <div class="score">10,200</div>
+                            <div class="score-label">词汇量</div>
+                        </div>
+                    </div>
+
+                    <div class="ranking-item">
+                        <div class="ranking-left">
+                            <div class="rank-number other">4</div>
+                            <div class="user-avatar">刘</div>
+                            <div class="user-info">
+                                <h3>刘强</h3>
+                                <p>中级学习者</p>
+                            </div>
+                        </div>
+                        <div class="ranking-right">
+                            <div class="score">9,800</div>
+                            <div class="score-label">词汇量</div>
+                        </div>
+                    </div>
+
+                    <div class="ranking-item">
+                        <div class="ranking-left">
+                            <div class="rank-number other">5</div>
+                            <div class="user-avatar">陈</div>
+                            <div class="user-info">
+                                <h3>陈明</h3>
+                                <p>中级学习者</p>
+                            </div>
+                        </div>
+                        <div class="ranking-right">
+                            <div class="score">9,200</div>
+                            <div class="score-label">词汇量</div>
+                        </div>
+                    </div>
+
+                    <div class="ranking-item">
+                        <div class="ranking-left">
+                            <div class="rank-number other">6</div>
+                            <div class="user-avatar">赵</div>
+                            <div class="user-info">
+                                <h3>赵敏</h3>
+                                <p>中级学习者</p>
+                            </div>
+                        </div>
+                        <div class="ranking-right">
+                            <div class="score">8,900</div>
+                            <div class="score-label">词汇量</div>
+                        </div>
+                    </div>
+
+                    <div class="ranking-item">
+                        <div class="ranking-left">
+                            <div class="rank-number other">7</div>
+                            <div class="user-avatar">孙</div>
+                            <div class="user-info">
+                                <h3>孙丽</h3>
+                                <p>初级学习者</p>
+                            </div>
+                        </div>
+                        <div class="ranking-right">
+                            <div class="score">8,600</div>
+                            <div class="score-label">词汇量</div>
+                        </div>
+                    </div>
+
+                    <div class="ranking-item" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white;">
+                        <div class="ranking-left">
+                            <div class="rank-number other">8</div>
+                            <div class="user-avatar" style="background: linear-gradient(135deg, #ff6b6b, #ee5a24);">小</div>
+                            <div class="user-info">
+                                <h3 style="color: white;">小明</h3>
+                                <p style="color: rgba(255,255,255,0.8);">中级学习者</p>
+                            </div>
+                        </div>
+                        <div class="ranking-right">
+                            <div class="score" style="color: white;">8,500</div>
+                            <div class="score-label" style="color: rgba(255,255,255,0.8);">词汇量</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-overview">
+                    <div class="stats-title">📊 排行榜统计</div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">156</div>
+                            <div class="stat-label">参与人数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">9,850</div>
+                            <div class="stat-label">平均词汇量</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">85%</div>
+                            <div class="stat-label">平均正确率</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">12</div>
+                            <div class="stat-label">平均测试次数</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bottom-nav">
+                    <div class="nav-item">
+                        <div class="nav-icon">🏠</div>
+                        <div class="nav-label">首页</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon">📝</div>
+                        <div class="nav-label">测试</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon">📈</div>
+                        <div class="nav-label">历史</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon">👤</div>
+                        <div class="nav-label">我的</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            // 更新标签状态
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 模拟切换功能
+            alert(`切换到${tab === 'friends' ? '好友榜' : tab === 'global' ? '全球榜' : '周榜'}`);
+        }
+    </script>
+</body>
+</html> 

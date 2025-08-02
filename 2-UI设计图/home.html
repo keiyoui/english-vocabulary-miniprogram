@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页 - 英语单词量测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            margin: 20px auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .battery {
+            width: 25px;
+            height: 12px;
+            border: 1px solid white;
+            border-radius: 3px;
+            position: relative;
+        }
+
+        .battery::after {
+            content: '';
+            position: absolute;
+            right: -3px;
+            top: 3px;
+            width: 2px;
+            height: 6px;
+            background: white;
+            border-radius: 0 1px 1px 0;
+        }
+
+        .battery-level {
+            width: 80%;
+            height: 100%;
+            background: white;
+            border-radius: 1px;
+        }
+
+        .app-content {
+            height: calc(100% - 44px);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow-y: auto;
+        }
+
+        .header-section {
+            padding: 30px 20px 20px;
+            color: white;
+        }
+
+        .welcome-text {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .user-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-details h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .user-details p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .main-actions {
+            padding: 0 20px 20px;
+        }
+
+        .start-test-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 25px;
+            padding: 18px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            width: 100%;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .start-test-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .action-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .action-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .action-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .action-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .action-desc {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 335px;
+            background: white;
+            border-radius: 25px 25px 0 0;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .nav-item.active {
+            color: #667eea;
+        }
+
+        .nav-item:not(.active) {
+            color: #999;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .floating-btn {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255,107,107,0.3);
+            transition: transform 0.2s ease;
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="phone-screen">
+            <div class="status-bar">
+                <div class="status-left">
+                    <span>9:41</span>
+                </div>
+                <div class="status-right">
+                    <span>📶</span>
+                    <span>📶</span>
+                    <div class="battery">
+                        <div class="battery-level"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="app-content">
+                <div class="header-section">
+                    <div class="welcome-text">早上好，小明！</div>
+                    <div class="subtitle">今天也要加油学习哦 💪</div>
+
+                    <div class="user-card">
+                        <div class="user-info">
+                            <div class="avatar">小</div>
+                            <div class="user-details">
+                                <h3>小明</h3>
+                                <p>已学习 28 天</p>
+                            </div>
+                        </div>
+
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-number">8,500</div>
+                                <div class="stat-label">词汇量</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">15</div>
+                                <div class="stat-label">测试次数</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">85%</div>
+                                <div class="stat-label">正确率</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">7</div>
+                                <div class="stat-label">连续天数</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="main-actions">
+                    <button class="start-test-btn" onclick="alert('开始测试！')">
+                        🚀 开始测试
+                    </button>
+
+                    <div class="quick-actions">
+                        <div class="action-card" onclick="alert('查看历史记录')">
+                            <div class="action-icon">📈</div>
+                            <div class="action-title">历史记录</div>
+                            <div class="action-desc">查看测试历史</div>
+                        </div>
+                        <div class="action-card" onclick="alert('查看排行榜')">
+                            <div class="action-icon">🏆</div>
+                            <div class="action-title">排行榜</div>
+                            <div class="action-desc">好友排名</div>
+                        </div>
+                        <div class="action-card" onclick="alert('词汇库')">
+                            <div class="action-icon">📚</div>
+                            <div class="action-title">词汇库</div>
+                            <div class="action-desc">学习资源</div>
+                        </div>
+                        <div class="action-card" onclick="alert('个人中心')">
+                            <div class="action-icon">👤</div>
+                            <div class="action-title">个人中心</div>
+                            <div class="action-desc">设置管理</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bottom-nav">
+                    <div class="nav-item active">
+                        <div class="nav-icon">🏠</div>
+                        <div class="nav-label">首页</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon">📝</div>
+                        <div class="nav-label">测试</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon">📈</div>
+                        <div class="nav-label">历史</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon">👤</div>
+                        <div class="nav-label">我的</div>
+                    </div>
+                </div>
+
+                <div class="floating-btn" onclick="alert('分享给好友')">
+                    📤
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

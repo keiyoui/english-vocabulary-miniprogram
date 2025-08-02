@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试页面 - 英语单词量测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            margin: 20px auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .app-content {
+            height: calc(100% - 44px);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+        }
+
+        .test-header {
+            padding: 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .progress-info {
+            text-align: center;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 6px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 60%;
+            height: 100%;
+            background: white;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .timer {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .question-container {
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .question-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .question-type {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .question-hint {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .option.correct {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .option.incorrect {
+            border-color: #dc3545;
+            background: linear-gradient(135deg, #dc3545, #e74c3c);
+            color: white;
+        }
+
+        .action-buttons {
+            padding: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .skip-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .explanation {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .explanation-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .explanation-text {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="phone-screen">
+            <div class="status-bar">
+                <div class="status-left">
+                    <span>9:41</span>
+                </div>
+                <div class="status-right">
+                    <span>📶</span>
+                    <span>📶</span>
+                    <div class="battery">
+                        <div class="battery-level"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="app-content">
+                <button class="skip-btn" onclick="alert('跳过此题')">跳过</button>
+
+                <div class="test-header">
+                    <div class="progress-info">
+                        <div class="progress-text">第 6 题 / 共 20 题</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                    </div>
+                    <div class="timer">⏱️ 02:35</div>
+                </div>
+
+                <div class="question-container">
+                    <div class="question-header">
+                        <div class="question-type">词义选择</div>
+                        <div class="question-text">"Eloquent"</div>
+                        <div class="question-hint">请选择最合适的中文释义</div>
+                    </div>
+
+                    <div class="options-container">
+                        <div class="option" onclick="selectOption(this)">
+                            A. 优雅的
+                        </div>
+                        <div class="option" onclick="selectOption(this)">
+                            B. 雄辩的
+                        </div>
+                        <div class="option" onclick="selectOption(this)">
+                            C. 聪明的
+                        </div>
+                        <div class="option" onclick="selectOption(this)">
+                            D. 勤奋的
+                        </div>
+                    </div>
+
+                    <div class="explanation" id="explanation">
+                        <div class="explanation-title">📖 答案解析</div>
+                        <div class="explanation-text">
+                            "Eloquent" 意为"雄辩的，有说服力的"。这个词通常用来形容说话或写作时表达清晰、有说服力的人。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="alert('上一题')">上一题</button>
+                    <button class="btn btn-primary" onclick="nextQuestion()">下一题</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectOption(element) {
+            // 移除其他选项的选中状态
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // 添加选中状态
+            element.classList.add('selected');
+            
+            // 显示答案解析
+            setTimeout(() => {
+                document.getElementById('explanation').classList.add('show');
+            }, 1000);
+        }
+
+        function nextQuestion() {
+            const selected = document.querySelector('.option.selected');
+            if (!selected) {
+                alert('请选择一个答案');
+                return;
+            }
+            
+            // 模拟正确答案
+            const correctAnswer = document.querySelectorAll('.option')[1]; // B选项
+            const isCorrect = selected === correctAnswer;
+            
+            if (isCorrect) {
+                selected.classList.add('correct');
+            } else {
+                selected.classList.add('incorrect');
+                correctAnswer.classList.add('correct');
+            }
+            
+            setTimeout(() => {
+                alert('答案已提交！');
+            }, 500);
+        }
+    </script>
+</body>
+</html> 

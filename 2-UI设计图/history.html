@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>历史记录 - 英语单词量测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            margin: 20px auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .app-content {
+            height: calc(100% - 44px);
+            background: #f8f9fa;
+            overflow-y: auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .stats-overview {
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .trend-chart {
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            height: 150px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: flex;
+            align-items: end;
+            padding: 20px;
+            gap: 10px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(to top, #667eea, #764ba2);
+            border-radius: 5px 5px 0 0;
+            position: relative;
+        }
+
+        .chart-bar:nth-child(1) { height: 60%; }
+        .chart-bar:nth-child(2) { height: 80%; }
+        .chart-bar:nth-child(3) { height: 70%; }
+        .chart-bar:nth-child(4) { height: 90%; }
+        .chart-bar:nth-child(5) { height: 85%; }
+        .chart-bar:nth-child(6) { height: 95%; }
+        .chart-bar:nth-child(7) { height: 75%; }
+
+        .chart-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .history-list {
+            margin: 20px;
+        }
+
+        .history-item {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .history-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .history-date {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .history-score {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .history-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .detail-item {
+            text-align: center;
+        }
+
+        .detail-number {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .filter-tabs {
+            display: flex;
+            background: white;
+            margin: 20px;
+            border-radius: 15px;
+            padding: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .filter-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .filter-tab:not(.active) {
+            color: #666;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 335px;
+            background: white;
+            border-radius: 25px 25px 0 0;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .nav-item.active {
+            color: #667eea;
+        }
+
+        .nav-item:not(.active) {
+            color: #999;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="phone-screen">
+            <div class="status-bar">
+                <div class="status-left">
+                    <span>9:41</span>
+                </div>
+                <div class="status-right">
+                    <span>📶</span>
+                    <span>📶</span>
+                    <div class="battery">
+                        <div class="battery-level"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="app-content">
+                <div class="header">
+                    <h1>📈 历史记录</h1>
+                    <p>查看你的学习进度和成绩趋势</p>
+                </div>
+
+                <div class="stats-overview">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">15</div>
+                            <div class="stat-label">总测试次数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">85%</div>
+                            <div class="stat-label">平均正确率</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">8,500</div>
+                            <div class="stat-label">当前词汇量</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trend-chart">
+                    <div class="chart-title">📊 成绩趋势</div>
+                    <div class="chart-container">
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                        <div class="chart-bar"></div>
+                    </div>
+                    <div class="chart-labels">
+                        <span>周一</span>
+                        <span>周二</span>
+                        <span>周三</span>
+                        <span>周四</span>
+                        <span>周五</span>
+                        <span>周六</span>
+                        <span>周日</span>
+                    </div>
+                </div>
+
+                <div class="filter-tabs">
+                    <div class="filter-tab active" onclick="filterRecords('all')">全部</div>
+                    <div class="filter-tab" onclick="filterRecords('week')">本周</div>
+                    <div class="filter-tab" onclick="filterRecords('month')">本月</div>
+                </div>
+
+                <div class="history-list">
+                    <div class="history-item" onclick="alert('查看详情')">
+                        <div class="history-header">
+                            <div class="history-date">2024年1月15日 14:30</div>
+                            <div class="history-score">85%</div>
+                        </div>
+                        <div class="history-details">
+                            <div class="detail-item">
+                                <div class="detail-number">17/20</div>
+                                <div class="detail-label">答对题目</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-number">12:35</div>
+                                <div class="detail-label">用时</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-number">中级</div>
+                                <div class="detail-label">水平</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="history-item" onclick="alert('查看详情')">
+                        <div class="history-header">
+                            <div class="history-date">2024年1月14日 09:15</div>
+                            <div class="history-score">90%</div>
+                        </div>
+                        <div class="history-details">
+                            <div class="detail-item">
+                                <div class="detail-number">18/20</div>
+                                <div class="detail-label">答对题目</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-number">10:20</div>
+                                <div class="detail-label">用时</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-number">中级</div>
+                                <div class="detail-label">水平</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="history-item" onclick="alert('查看详情')">
+                        <div class="history-header">
+                            <div class="history-date">2024年1月13日 16:45</div>
+                            <div class="history-score">75%</div>
+                        </div>
+                        <div class="history-details">
+                            <div class="detail-item">
+                                <div class="detail-number">15/20</div>
+                                <div class="detail-label">答对题目</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-number">15:10</div>
+                                <div class="detail-label">用时</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-number">初级</div>
+                                <div class="detail-label">水平</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="history-item" onclick="alert('查看详情')">
+                        <div class="history-header">
+                            <div class="history-date">2024年1月12日 11:20</div>
+                            <div class="history-score">95%</div>
+                        </div>
+                        <div class="history-details">
+                            <div class="detail-item">
+                                <div class="detail-number">19/20</div>
+                                <div class="detail-label">答对题目</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-number">08:45</div>
+                                <div class="detail-label">用时</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-number">高级</div>
+                                <div class="detail-label">水平</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bottom-nav">
+                    <div class="nav-item">
+                        <div class="nav-icon">🏠</div>
+                        <div class="nav-label">首页</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon">📝</div>
+                        <div class="nav-label">测试</div>
+                    </div>
+                    <div class="nav-item active">
+                        <div class="nav-icon">📈</div>
+                        <div class="nav-label">历史</div>
+                    </div>
+                    <div class="nav-item">
+                        <div class="nav-icon">👤</div>
+                        <div class="nav-label">我的</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterRecords(type) {
+            // 更新标签状态
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 模拟筛选功能
+            alert(`筛选${type === 'all' ? '全部' : type === 'week' ? '本周' : '本月'}记录`);
+        }
+    </script>
+</body>
+</html> 
